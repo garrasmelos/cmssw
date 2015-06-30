@@ -32,6 +32,7 @@ class Py8PtGunTFunc : public Py8GunBase {
       double  fMinPt ;
       double  fMaxPt ;
       bool    fAddAntiParticle;
+      TF1* f1;
 
 };
 
@@ -40,6 +41,8 @@ class Py8PtGunTFunc : public Py8GunBase {
 Py8PtGunTFunc::Py8PtGunTFunc( edm::ParameterSet const& ps )
    : Py8GunBase(ps) 
 {
+  using std::string;
+
    // ParameterSet defpset ;
    edm::ParameterSet pgun_params = 
       ps.getParameter<edm::ParameterSet>("PGunParameters"); // , defpset ) ;
@@ -48,6 +51,13 @@ Py8PtGunTFunc::Py8PtGunTFunc( edm::ParameterSet const& ps )
    fMinPt      = pgun_params.getParameter<double>("MinPt"); // ,  0.);
    fMaxPt      = pgun_params.getParameter<double>("MaxPt"); // ,  0.);
    fAddAntiParticle = pgun_params.getParameter<bool>("AddAntiParticle"); //, false) ;  
+   
+   string tfunction_string = pgun_params.getParameter<string>("TFunction_string");
+   double tfunction_min = pgun_params.getParameter<double>("TFunction_min");
+   double tfunction_max = pgun_params.getParameter<double>("TFunction_max");
+
+   f1 = new TF1("pt_func", tfunction_string.c_str(), tfunction_min, tfunction_max);
+   f1->SetParameter(0,0.111);
 }
 bool Py8PtGunTFunc::generatePartonsAndHadronize()
 {
@@ -63,17 +73,21 @@ bool Py8PtGunTFunc::generatePartonsAndHadronize()
       f1->SetParameter(1,0.0);
       f1->SetParameter(2,0.5);
 */
+
+
+/*Hard coded function 
       TF1 *f1 = new TF1("f1","1/((1+[0]*x*x)**6)",0,10);
       f1->SetParameter(0,0.111);
-      
-
       double r = f1->GetRandom();
+*/
       //double  r = gRandom->Gaus(0,.5);
       int particleID = fPartIDs[i]; // this is PDG - need to convert to Py8 ???
 
       double phi = (fMaxPhi-fMinPhi) * randomEngine().flat() + fMinPhi;
       double eta  = (fMaxEta-fMinEta) * randomEngine().flat() + fMinEta;
       double the  = 2.*atan(exp(-eta));
+
+      double r = f1->GetRandom();
 
 //      double pt   = (fMaxPt-fMinPt) * r + fMinPt ;
       double pt = r;      

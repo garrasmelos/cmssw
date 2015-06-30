@@ -20,7 +20,12 @@ generator = cms.EDFilter(
         MinPt = cms.double(0.0),
         MaxPt = cms.double(40.0),
         MinEta = cms.double(-2.4),
-        MaxEta = cms.double(2.4)
+        MaxEta = cms.double(2.4),
+        TFunction_string = cms.string("1/((1+[0]*x*x)**6)"),
+        TFunction_min = cms.double("5"),
+   	TFunction_max = cms.double("40")
+
+
         ),
     
     PythiaParameters = cms.PSet(
