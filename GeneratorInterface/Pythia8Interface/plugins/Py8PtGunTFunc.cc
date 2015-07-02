@@ -6,7 +6,7 @@
 
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
-#include <TH1.h>
+#include <TH1F.h>
 #include <TF1.h>
 #include <TRandom3.h>
 #include "TRandom2.h"
@@ -57,6 +57,9 @@ Py8PtGunTFunc::Py8PtGunTFunc( edm::ParameterSet const& ps )
    double tfunction_max = pgun_params.getParameter<double>("TFunction_max");
 
    f1 = new TF1("pt_func", tfunction_string.c_str(), tfunction_min, tfunction_max);
+   if ( fMinPt < tfunction_min || fMaxPt > tfunction_max) std::cout << "Warning: The cuts for the pt are out of the limits of the function."<< "\n";
+
+
 }
 bool Py8PtGunTFunc::generatePartonsAndHadronize()
 {
@@ -73,6 +76,10 @@ bool Py8PtGunTFunc::generatePartonsAndHadronize()
       double the  = 2.*atan(exp(-eta));
 
       double  pt = f1->GetRandom();
+      if (pt<fMinPt || pt > fMaxPt) continue;
+
+
+
       double mass = (fMasterGen->particleData).m0( particleID );
 
       double pp = pt / sin(the); // sqrt( ee*ee - mass*mass );
