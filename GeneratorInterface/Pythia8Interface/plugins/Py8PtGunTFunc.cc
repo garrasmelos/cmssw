@@ -57,7 +57,6 @@ Py8PtGunTFunc::Py8PtGunTFunc( edm::ParameterSet const& ps )
    double tfunction_max = pgun_params.getParameter<double>("TFunction_max");
 
    f1 = new TF1("pt_func", tfunction_string.c_str(), tfunction_min, tfunction_max);
-   f1->SetParameter(0,0.111);
 }
 bool Py8PtGunTFunc::generatePartonsAndHadronize()
 {
@@ -67,30 +66,13 @@ bool Py8PtGunTFunc::generatePartonsAndHadronize()
    for ( size_t i=0; i<fPartIDs.size(); i++ )
    {
 
-/*Gaussian function
-      TF1 *f1 = new TF1("f1","gaus(0)",0,4);
-      f1->SetParameter(0,1.0);
-      f1->SetParameter(1,0.0);
-      f1->SetParameter(2,0.5);
-*/
-
-
-/*Hard coded function 
-      TF1 *f1 = new TF1("f1","1/((1+[0]*x*x)**6)",0,10);
-      f1->SetParameter(0,0.111);
-      double r = f1->GetRandom();
-*/
-      //double  r = gRandom->Gaus(0,.5);
       int particleID = fPartIDs[i]; // this is PDG - need to convert to Py8 ???
 
       double phi = (fMaxPhi-fMinPhi) * randomEngine().flat() + fMinPhi;
       double eta  = (fMaxEta-fMinEta) * randomEngine().flat() + fMinEta;
       double the  = 2.*atan(exp(-eta));
 
-      double r = f1->GetRandom();
-
-//      double pt   = (fMaxPt-fMinPt) * r + fMinPt ;
-      double pt = r;      
+      double  pt = f1->GetRandom();
       double mass = (fMasterGen->particleData).m0( particleID );
 
       double pp = pt / sin(the); // sqrt( ee*ee - mass*mass );
