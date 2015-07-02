@@ -57,8 +57,12 @@ Py8PtGunTFunc::Py8PtGunTFunc( edm::ParameterSet const& ps )
    double tfunction_max = pgun_params.getParameter<double>("TFunction_max");
 
    f1 = new TF1("pt_func", tfunction_string.c_str(), tfunction_min, tfunction_max);
-   if ( fMinPt < tfunction_min || fMaxPt > tfunction_max) std::cout << "Warning: The cuts for the pt are out of the limits of the function."<< "\n";
-
+   if ( fMinPt < tfunction_min || fMaxPt > tfunction_max)
+   {
+       std::cout << "Warning: The cuts for the pt are out of the limits of the function."<< "\n";
+       if (fMinPt < tfunction_min) fMinPt = tfunction_min;
+       if (fMaxPt > tfunction_max) fMaxPt = tfunction_max;
+   }       
 
 }
 bool Py8PtGunTFunc::generatePartonsAndHadronize()
@@ -69,15 +73,20 @@ bool Py8PtGunTFunc::generatePartonsAndHadronize()
    for ( size_t i=0; i<fPartIDs.size(); i++ )
    {
 
+      
       int particleID = fPartIDs[i]; // this is PDG - need to convert to Py8 ???
 
       double phi = (fMaxPhi-fMinPhi) * randomEngine().flat() + fMinPhi;
       double eta  = (fMaxEta-fMinEta) * randomEngine().flat() + fMinEta;
       double the  = 2.*atan(exp(-eta));
-
-      double  pt = f1->GetRandom();
-      if (pt<fMinPt || pt > fMaxPt) continue;
-
+      
+      double pt;
+      while (1)
+      {
+         pt = f1->GetRandom();
+         if (pt > fMinPt && pt < fMaxPt) break;
+          
+      }
 
 
       double mass = (fMasterGen->particleData).m0( particleID );
