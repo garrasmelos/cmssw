@@ -9,7 +9,7 @@
 #include <TH1F.h>
 #include <TF1.h>
 #include <TRandom3.h>
-#include "TRandom2.h"
+//#include "TRandom2.h"
 #include "TMath.h"
 
 namespace gen {
@@ -33,7 +33,7 @@ class Py8PtGunTFunc : public Py8GunBase {
       double  fMaxPt ;
       bool    fAddAntiParticle;
       TF1* f1;
-
+      
 };
 
 // implementation 
@@ -51,11 +51,12 @@ Py8PtGunTFunc::Py8PtGunTFunc( edm::ParameterSet const& ps )
    fMinPt      = pgun_params.getParameter<double>("MinPt"); // ,  0.);
    fMaxPt      = pgun_params.getParameter<double>("MaxPt"); // ,  0.);
    fAddAntiParticle = pgun_params.getParameter<bool>("AddAntiParticle"); //, false) ;  
-   
+   if(gRandom) delete gRandom;
+   gRandom = new TRandom3(0);   
+   gRandom->SetSeed(0);
    string tfunction_string = pgun_params.getParameter<string>("TFunction_string");
    double tfunction_min = pgun_params.getParameter<double>("TFunction_min");
    double tfunction_max = pgun_params.getParameter<double>("TFunction_max");
-
    f1 = new TF1("pt_func", tfunction_string.c_str(), tfunction_min, tfunction_max);
    if ( fMinPt < tfunction_min || fMaxPt > tfunction_max)
    {
