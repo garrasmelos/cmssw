@@ -95,7 +95,9 @@ process.source = cms.Source("PoolSource",
 #in_dir_name = '/eos/cms/store/data/Commissioning2018/ZeroBias/RAW/v1/000/314/663/00000/'
 #in_dir_name = '/eos/cms/store/data/Run2018A/ZeroBias/RAW/v1/000/315/420/00000/'
 #in_dir_name = '/eos/cms/store/data/Run2018A/SingleMuon/RAW/v1/000/315/764/00000/'
-in_dir_name = '/eos/cms/store/data/Run2018A/SingleMuon/RAW-RECO/ZMu-PromptReco-v1/000/315/800/00000/'
+#in_dir_name = '/eos/cms/store/data/Run2018A/SingleMuon/RAW-RECO/ZMu-PromptReco-v1/000/315/800/00000/'
+in_dir_name = '/eos/cms/store/data/Run2018A/SingleMuon/RAW-RECO/ZMu-PromptReco-v1/000/315/257/00000/'
+#in_dir_name = '/eos/ems/store/data/Run2018A/SingleMuon/RAW-RECO/ZMu-PromptReco-v3/000/316/995/00000/'
 
 #readFiles.extend( cms.untracked.vstring('file:'+in_dir_name+'4CD446F8-8643-E811-ADE1-FA163E24B9CF.root') )
 #readFiles.extend( cms.untracked.vstring('file:'+in_dir_name+'AADB01BE-474C-E811-A57C-02163E013D6F.root') )

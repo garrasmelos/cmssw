@@ -82,7 +82,6 @@ void DQM_CPPF::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
     matches_unpacker_bx = 0;
     matches_unpacker_int = 0;
     for(auto& cppf_digis_unpacker : *CppfDigis2){
-      
       RPCDetId rpcId_unpacker = cppf_digis_unpacker.rpcId();
       int region_unpacker = rpcId_unpacker.region();
       int station_unpacker = rpcId_unpacker.station();
@@ -94,7 +93,8 @@ void DQM_CPPF::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       int bx_unpacker = cppf_digis_unpacker.bx();
       
       int EMTF_sector_u = cppf_digis_unpacker.emtf_sector();
-      int EMTF_subsector_u = fill_info[EMTF_sector_u][subsector_unpacker-1];
+      //int EMTF_subsector_u = fill_info[EMTF_sector_u][subsector_unpacker-1];
+      int EMTF_subsector_u = fill_info[sector_unpacker][subsector_unpacker-1];
 
       //Chamber ID
       int nsub_un = 6;
@@ -105,12 +105,12 @@ void DQM_CPPF::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       int fill_bx_unpacker = bx_value(region_unpacker, EMTF_sector_u);
       
       if((region == region_unpacker) && 
-	 (station == station_unpacker) &&
-	 (ring == ring_unpacker) &&
-	 (sector == sector_unpacker) &&
-	 (subsector == subsector_unpacker)){
+	        (station == station_unpacker) &&
+	        (ring == ring_unpacker) &&
+	        (sector == sector_unpacker) &&
+	        (subsector == subsector_unpacker)){
 	
-	matches_unpacker++;
+	      matches_unpacker++;
         Matches_unpacker_ch->Fill(matches_unpacker);
 	
         chamber_emu_unpacker->Fill(chamberID, chamberID_unpacker); 
@@ -120,37 +120,33 @@ void DQM_CPPF::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
         bx_emu_unpacker->Fill(cppf_digis.bx(),bx_unpacker);
 	
         if(cppf_digis.bx() ==  bx_unpacker){
-	  matches_unpacker_bx++;
-	  Matches_unpacker_bx->Fill(matches_unpacker_bx);	
-	  phi_emu_unpacker_bx->Fill(phi_int, phi_int_unpacker);
-	  theta_emu_unpacker_bx->Fill(theta_int, theta_int_unpacker); 
-	  bx_emu_unpacker_bx->Fill(cppf_digis.bx(),bx_unpacker);
+	        matches_unpacker_bx++;
+	        Matches_unpacker_bx->Fill(matches_unpacker_bx);	
+	        phi_emu_unpacker_bx->Fill(phi_int, phi_int_unpacker);
+	        theta_emu_unpacker_bx->Fill(theta_int, theta_int_unpacker); 
+	        bx_emu_unpacker_bx->Fill(cppf_digis.bx(),bx_unpacker);
 	  
-	  if((phi_int == phi_int_unpacker) && (theta_int == theta_int_unpacker)){
-	    matches_unpacker_int++;
-	    Matches_unpacker_int->Fill(matches_unpacker_int);	
-	    phi_emu_unpacker_int->Fill(phi_int, phi_int_unpacker);
-	    theta_emu_unpacker_int->Fill(theta_int, theta_int_unpacker); 
+	        if((phi_int == phi_int_unpacker) && (theta_int == theta_int_unpacker)){
+	          matches_unpacker_int++;
+	          Matches_unpacker_int->Fill(matches_unpacker_int);	
+	          phi_emu_unpacker_int->Fill(phi_int, phi_int_unpacker);
+	          theta_emu_unpacker_int->Fill(theta_int, theta_int_unpacker); 
             //Occupancy 
-	    occupancy_unpacker->Fill(EMTF_subsector_u, fill_occupancy_unpacker);
-	    //occupancy_unpacker->Fill(EMTF_subsector, fill_occupancy);
-	    occupancy_emu_unpacker->Fill(EMTF_subsector, fill_occupancy);
+	          occupancy_unpacker->Fill(EMTF_subsector_u, fill_occupancy_unpacker);
+	          //occupancy_unpacker->Fill(EMTF_subsector, fill_occupancy);
+	          occupancy_emu_unpacker->Fill(EMTF_subsector, fill_occupancy);
             //bx occupancy 
-            bx_occupancy_unpacker->Fill(EMTF_bx, fill_occupancy_unpacker);
+            bx_occupancy_unpacker->Fill(bx_unpacker, fill_occupancy_unpacker);
             bx_occupancy_emu_unpacker->Fill(EMTF_bx, fill_occupancy);
             //bx
-            bx_sector_unpacker->Fill(fill_bx_unpacker,EMTF_bx);
+            bx_sector_unpacker->Fill(fill_bx_unpacker,bx_unpacker);
             bx_sector_emu_unpacker->Fill(fill_bx,EMTF_bx);
-	  } 
-	}
-	
+	        } 
+	      }
       }
-      
     }
     //Matching information
     Matches_unpacker->Fill(matches_unpacker);
-    
-    
     matches_emtf = 0;
     matches_emtf_bx = 0; 
     matches_emtf_int = 0; 
@@ -173,28 +169,28 @@ void DQM_CPPF::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       int chamberID_emtf = subsector_emtf + nsub_un * ( sector_emtf - 1);
       
       int EMTF_sector_e = cppf_digis_emtf.emtf_sector();
-      int EMTF_subsector_e = fill_info[EMTF_sector_e][subsector_emtf-1];
+      //int EMTF_subsector_e = fill_info[EMTF_sector_e][subsector_emtf-1];
+      int EMTF_subsector_e = fill_info[sector_emtf][subsector_emtf-1];
       
       if((phi_int == phi_int_emtf) && (theta_int == theta_int_emtf) && (region == region_emtf)){
-	chamber_emu_emtf_test->Fill(chamberID, chamberID_emtf);
+	      chamber_emu_emtf_test->Fill(chamberID, chamberID_emtf);
       }
-      
-      
-      /*     if((region == region_emtf) && 
-	     (station == station_emtf) &&
-	     (ring == ring_emtf) &&
-	     (sector == sector_emtf) &&
-	     (subsector == subsector_emtf)){
-      */
       int fill_occupancy_emtf = occupancy_value(region_emtf, station_emtf, ring_emtf);
       int fill_bx_emtf = bx_value(region_emtf, EMTF_sector_e);
 
       if((chamberID_emtf == 35) || (chamberID_emtf == 36)) chamberID_emtf -= 34;
       else chamberID_emtf += 2;
-      
-      if((chamberID == chamberID_emtf) && (region == region_emtf)){
-	
-	matches_emtf++;
+      /*
+      if((region == region_emtf) && 
+	        (station == station_emtf) &&
+	        (ring == ring_emtf) &&
+	        (sector == sector_emtf) &&
+	        (subsector == subsector_emtf)){
+      */
+      if((chamberID == chamberID_emtf) && (region == region_emtf) 
+         && (ring == ring_emtf) && (station == station_emtf) && (region ==region_emtf) 
+          ){
+	      matches_emtf++;
         Matches_emtf_ch->Fill(matches_emtf);
 	
         chamber_emu_emtf->Fill(chamberID, chamberID_emtf); 
@@ -204,89 +200,167 @@ void DQM_CPPF::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
         bx_emu_emtf->Fill(cppf_digis.bx(),bx_emtf);
 	
         if(cppf_digis.bx() ==  bx_emtf){
-	  matches_emtf_bx++;
-	  Matches_emtf_bx->Fill(matches_emtf_bx);	    
-	  phi_emu_emtf_bx->Fill(phi_int, phi_int_emtf);
-	  theta_emu_emtf_bx->Fill(theta_int, theta_int_emtf); 
-	  bx_emu_emtf_bx->Fill(cppf_digis.bx(),bx_emtf);
-	  if((phi_int == phi_int_emtf) && (theta_int == theta_int_emtf)){
-	    matches_emtf_int++;
-	    Matches_emtf_int->Fill(matches_emtf_int);
-	    phi_emu_emtf_int->Fill(phi_int, phi_int_emtf);
-	    theta_emu_emtf_int->Fill(theta_int, theta_int_emtf);
+	        matches_emtf_bx++;
+	        Matches_emtf_bx->Fill(matches_emtf_bx);	    
+	        phi_emu_emtf_bx->Fill(phi_int, phi_int_emtf);
+	        theta_emu_emtf_bx->Fill(theta_int, theta_int_emtf); 
+	        bx_emu_emtf_bx->Fill(cppf_digis.bx(),bx_emtf);
+	        if((phi_int == phi_int_emtf) && (theta_int == theta_int_emtf)){
+	          matches_emtf_int++;
+	          Matches_emtf_int->Fill(matches_emtf_int);
+	          phi_emu_emtf_int->Fill(phi_int, phi_int_emtf);
+	          theta_emu_emtf_int->Fill(theta_int, theta_int_emtf);
  
             //Occupancy
-	    occupancy_emtf->Fill(EMTF_subsector_e, fill_occupancy_emtf);
+	          occupancy_emtf->Fill(EMTF_subsector_e, fill_occupancy_emtf);
             //Setting up the subsector
-            if((EMTF_subsector == 1) || (EMTF_subsector == 2)) EMTF_subsector += 34;
-            else EMTF_subsector -= 2; 		 
-	    occupancy_emu_emtf->Fill(EMTF_subsector, fill_occupancy); 
+            //if((EMTF_subsector == 1) || (EMTF_subsector == 2)) EMTF_subsector += 34;
+            //else EMTF_subsector -= 2; 		 
+            if((EMTF_subsector_e == 35) || (EMTF_subsector_e == 36)) EMTF_subsector_e -= 34;
+            else EMTF_subsector_e += 2; 		 
+	          occupancy_emu_emtf->Fill(EMTF_subsector, fill_occupancy); 
             //bx occupancy 
-            bx_occupancy_emtf->Fill(EMTF_bx, fill_occupancy_emtf);
+            bx_occupancy_emtf->Fill(bx_emtf, fill_occupancy_emtf);
             bx_occupancy_emu_emtf->Fill(EMTF_bx, fill_occupancy);
             //bx
-            bx_sector_emtf->Fill(fill_bx_emtf,EMTF_bx);
+            bx_sector_emtf->Fill(fill_bx_emtf,bx_emtf);
             bx_sector_emu_emtf->Fill(fill_bx,EMTF_bx);
-	  }	    
+	        }	    
         }
-	
       }
-      
     }
     //Matching information
     Matches_emtf->Fill(matches_emtf);
-    
-    
-    
   } // loop over CPPFDigis
   
-  
+  //Comparison between CPPF and EMTF
+    
+  for(auto& cppf_digis_unpacker : *CppfDigis2){
+    RPCDetId rpcId_unpacker = cppf_digis_unpacker.rpcId();
+    int region_unpacker = rpcId_unpacker.region();
+    int station_unpacker = rpcId_unpacker.station();
+    int ring_unpacker = rpcId_unpacker.ring();
+    int sector_unpacker = rpcId_unpacker.sector();
+    int subsector_unpacker = rpcId_unpacker.subsector();
+    int phi_int_unpacker = cppf_digis_unpacker.phi_int();
+    int theta_int_unpacker =  cppf_digis_unpacker.theta_int();
+    int bx_unpacker = cppf_digis_unpacker.bx();
+    
+    //std::cout << "Subsector CPPF unpacker" << subsector_unpacker << std::endl;
+    int EMTF_sector_u = cppf_digis_unpacker.emtf_sector();
+    //int EMTF_subsector_u = fill_info[EMTF_sector_u][subsector_unpacker-1];
+    int EMTF_subsector_u = fill_info[sector_unpacker][subsector_unpacker-1];
+
+    //Chamber ID
+    int nsub_un = 6;
+    (ring_unpacker == 1 && station_unpacker > 1) ? nsub_un = 3 : nsub_un = 6;
+    int chamberID_unpacker = subsector_unpacker + nsub_un * ( sector_unpacker - 1);
+    
+    int fill_occupancy_unpacker = occupancy_value(region_unpacker, station_unpacker, ring_unpacker);
+    int fill_bx_unpacker = bx_value(region_unpacker, EMTF_sector_u);
+    
+    for(auto& cppf_digis_emtf : *CppfDigis3){
+      
+      RPCDetId rpcId_emtf = cppf_digis_emtf.rpcId();
+      int region_emtf = rpcId_emtf.region();
+      int station_emtf = rpcId_emtf.station();
+      int ring_emtf = rpcId_emtf.ring();
+      int sector_emtf = rpcId_emtf.sector();
+      int subsector_emtf = rpcId_emtf.subsector();
+      int phi_int_emtf = cppf_digis_emtf.phi_int();
+      int theta_int_emtf =  cppf_digis_emtf.theta_int();
+      int bx_emtf = cppf_digis_emtf.bx();
+      
+      //Chamber ID
+      int nsub_un = 6;
+      (ring_emtf == 1 && station_emtf > 1) ? nsub_un = 3 : nsub_un = 6;
+      int chamberID_emtf = subsector_emtf + nsub_un * ( sector_emtf - 1);
+      
+      if((phi_int_unpacker == phi_int_emtf) && (theta_int_unpacker == theta_int_emtf) && (region_unpacker == region_emtf)){
+	      chamber_unpacker_emtf_test->Fill(chamberID_unpacker, chamberID_emtf);
+      }
+      int fill_occupancy_emtf = occupancy_value(region_emtf, station_emtf, ring_emtf);
+      int EMTF_sector_e = cppf_digis_emtf.emtf_sector();
+      int EMTF_subsector_e = fill_info[sector_emtf][subsector_emtf-1];
+
+      int fill_bx_emtf = bx_value(region_emtf, EMTF_sector_e);
+
+      if((chamberID_emtf == 35) || (chamberID_emtf == 36)) chamberID_emtf -= 34;
+      else chamberID_emtf += 2;
+
+      if((chamberID_unpacker == chamberID_emtf)  
+         && (ring_unpacker == ring_emtf) && (station_unpacker == station_emtf) && (region_unpacker ==region_emtf) 
+          ){
+	
+        chamber_unpacker_emtf->Fill(chamberID_unpacker, chamberID_emtf); 
+	
+        phi_unpacker_emtf->Fill(phi_int_unpacker, phi_int_emtf);
+        theta_unpacker_emtf->Fill(theta_int_unpacker, theta_int_emtf);
+        bx_unpacker_emtf->Fill(cppf_digis_unpacker.bx(),bx_emtf);
+	
+        if(bx_unpacker ==  bx_emtf){
+	        phi_unpacker_emtf_bx->Fill(phi_int_unpacker, phi_int_emtf);
+	        theta_unpacker_emtf_bx->Fill(theta_int_unpacker, theta_int_emtf); 
+	        bx_unpacker_emtf_bx->Fill(bx_unpacker,bx_emtf);
+	        if((phi_int_unpacker == phi_int_emtf) && (theta_int_unpacker == theta_int_emtf)){
+	          phi_unpacker_emtf_int->Fill(phi_int_unpacker, phi_int_emtf);
+	          theta_unpacker_emtf_int->Fill(theta_int_unpacker, theta_int_emtf);
+ 
+            //Setting up the subsector
+            //if((EMTF_subsector_u == 1) || (EMTF_subsector_u == 2)) EMTF_subsector_u += 34;
+            //else EMTF_subsector_u -= 2; 		 
+            if((EMTF_subsector_e == 35) || (EMTF_subsector_e == 36)) EMTF_subsector_e -= 34;
+            else EMTF_subsector_e += 2; 		 
+	          occupancy_unpacker_emtf_u->Fill(EMTF_subsector_u, fill_occupancy_unpacker); 
+	          occupancy_unpacker_emtf_e->Fill(EMTF_subsector_e, fill_occupancy_emtf); 
+            //bx occupancy 
+            bx_occupancy_unpacker_emtf_u->Fill(bx_unpacker, fill_occupancy_unpacker);
+            bx_occupancy_unpacker_emtf_e->Fill(bx_emtf, fill_occupancy_emtf);
+            //bx
+            bx_sector_unpacker_emtf_u->Fill(fill_bx_unpacker,bx_unpacker);
+            bx_sector_unpacker_emtf_e->Fill(fill_bx_emtf,bx_emtf);
+	        }	    
+        }
+      }
+    }
+  } // loop over CPPFDigis
   
 } //End class
 
 int DQM_CPPF::occupancy_value(int region_, int station_, int ring_){
-  
   int fill_val = 0;
+
   if(region_ == -1){
-    
     if((station_ == 4) && (ring_ == 3)) fill_val = 1;
     else if ((station_ == 4) && (ring_ == 2)) fill_val = 2;
     else if ((station_ == 3) && (ring_ == 3)) fill_val = 3;
     else if ((station_ == 3) && (ring_ == 2)) fill_val = 4;
     else if ((station_ == 2) && (ring_ == 2)) fill_val = 5;
     else if ((station_ == 1) && (ring_ == 2)) fill_val = 6;
-    
   }
   else if(region_ == +1){
-    
     if((station_ == 1) && (ring_ == 2)) fill_val = 7; 
     else if((station_ == 2) && (ring_ == 2)) fill_val = 8;
     else if((station_ == 3) && (ring_ == 2)) fill_val = 9;
     else if((station_ == 3) && (ring_ == 3)) fill_val = 10;
     else if((station_ == 4) && (ring_ == 2)) fill_val = 11;
     else if((station_ == 4) && (ring_ == 3)) fill_val = 12;
-    
   }
   return fill_val;
 }
 
 int DQM_CPPF::bx_value(int region_, int emtfsector_){
-  
   int fill_val = 0;
-  
+
   if(region_ == -1){
-    
     if(emtfsector_ == 1) fill_val = 6;
     else if(emtfsector_ == 2) fill_val = 5;
     else if(emtfsector_ == 3) fill_val = 4;
     else if(emtfsector_ == 4) fill_val = 3;
     else if(emtfsector_ == 5) fill_val = 2;
     else if(emtfsector_ == 6) fill_val = 1;
-    
   }
-  
   else if(region_ == +1){
-    
     if(emtfsector_ == 1) fill_val = 7;
     else if(emtfsector_ == 2) fill_val = 8;
     else if(emtfsector_ == 3) fill_val = 9;
@@ -357,6 +431,25 @@ void DQM_CPPF::beginJob(){
  
                                     
  
+  chamber_unpacker_emtf_test = fs->make<TH2D>("chamber_unpacker_emtf_test","chamber_unpacker_emtf_test", 36, 1.,37.,36,1.,37.);
+  chamber_unpacker_emtf = fs->make<TH2D>("chamber_unpacker_emtf","chamber_unpacker_emtf", 36, 1.,37.,36,1.,37.);
+  phi_unpacker_emtf=fs->make<TH2D>("phi_unpacker_emtf", "phi_unpacker_emtf",  124, 0., 1240., 124, 0., 1240.);
+  theta_unpacker_emtf=fs->make<TH2D>("theta_unpacker_emtf", "theta_unpacker_emtf",  32, 0., 32., 32, 0., 32.);
+  bx_unpacker_emtf = fs->make<TH2D>("bx_unpacker_emtf","bx_unpacker_emtf", 8, -3.5,4.5, 8, -3.5, 4.5);
+  
+  phi_unpacker_emtf_bx=fs->make<TH2D>("phi_unpacker_emtf_bx", "phi_unpacker_emtf_bx",  124, 0., 1240., 124, 0., 1240.);
+  theta_unpacker_emtf_bx=fs->make<TH2D>("theta_unpacker_emtf_bx", "theta_unpacker_emtf_bx",  32, 0., 32., 32, 0., 32.);
+  bx_unpacker_emtf_bx = fs->make<TH2D>("bx_unpacker_emtf_bx","bx_unpacker_emtf_bx", 8, -3.5,4.5, 8, -3.5, 4.5);
+  
+  phi_unpacker_emtf_int=fs->make<TH2D>("phi_unpacker_emtf_int", "phi_unpacker_emtf_int",  124, 0., 1240., 124, 0., 1240.);
+  theta_unpacker_emtf_int=fs->make<TH2D>("theta_unpacker_emtf_int", "theta_unpacker_emtf_int",  32, 0., 32., 32, 0., 32.);
+  occupancy_unpacker_emtf_u = fs->make<TH2D>("occupancy_unpacker_emtf_u", "CPPFDigis occupancy_unpacker_emtf_u", 36, 0.5, 36.5, 12, 0.5,12.5); 
+  occupancy_unpacker_emtf_e = fs->make<TH2D>("occupancy_unpacker_emtf_e", "CPPFDigis occupancy_unpacker_emtf_e", 36, 0.5, 36.5, 12, 0.5,12.5); 
+  
+  bx_occupancy_unpacker_emtf_u = fs->make<TH2D>("bx_occupancy_unpacker_emtf_u","CPPFDigis Bx_Occupancy_unpacker_emtf_u", 8, -3.5, 4.5, 12, 0.5, 12.5);
+  bx_occupancy_unpacker_emtf_e = fs->make<TH2D>("bx_occupancy_unpacker_emtf_e","CPPFDigis Bx_Occupancy_unpacker_emtf_e", 8, -3.5, 4.5, 12, 0.5, 12.5);
+  bx_sector_unpacker_emtf_u = fs->make<TH2D>("bx_sector_unpacker_emtf_u","CPPFDigis Bx_unpacker_emtf_u", 12, 0.5, 12.5, 8,-3.5,4.5);
+  bx_sector_unpacker_emtf_e = fs->make<TH2D>("bx_sector_unpacker_emtf_e","CPPFDigis Bx_unpacker_emtf_e", 12, 0.5, 12.5, 8,-3.5,4.5);
   return;
 }
 //define this as a plug-in

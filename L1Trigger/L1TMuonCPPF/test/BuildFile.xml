@@ -32,3 +32,6 @@
 <library file="DQMCPPF.cc" name="DQMCPPF">
 <flags EDM_PLUGIN="1"/>
 </library>
+<library file="EMTF_CPPF_DQM.cc" name="EMTF_CPPF_DQM">
+<flags EDM_PLUGIN="1"/>
+</library>
