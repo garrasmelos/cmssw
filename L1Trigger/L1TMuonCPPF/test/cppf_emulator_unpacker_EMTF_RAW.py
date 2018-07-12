@@ -83,7 +83,8 @@ process.emulatorCppfDigis.recHitLabel = 'rpcRecHits'
 
 process.load('EventFilter.L1TRawToDigi.emtfStage2Digis_cfi')
 process.load('L1Trigger.L1TMuonEndCap.simEmtfDigis_cfi')
-process.simEmtfDigis.RPCInput  = cms.InputTag('rpcunpacker')
+process.simEmtfDigisData.RPCInput  = cms.InputTag('rpcunpacker')
+#process.simEmtfDigis.RPCInput  = cms.InputTag('muonRPCDigis')
 
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
